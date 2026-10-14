@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body class="admin-page">
-  <header class="site-header"><nav class="navbar container" aria-label="Main navigation"><a class="brand" href="/" aria-label="Nexus Hub home"><!-- Replace this asset with the official Nexus Hub logo. --><img class="brand-logo" src="/static/images/logo.png" alt="Nexus Hub logo"></a></nav></header>
+  <header class="site-header"><nav class="navbar container" aria-label="Main navigation"><a class="brand" href="/" aria-label="Nexus Hub home"><!-- Replace this asset with the official Nexus Hub logo. --><img class="brand-logo" src="/static/images/logo.png" alt="Nexus Hub logo"></a><button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch to dark mode"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span class="theme-toggle-label">Dark mode</span></button></nav></header>
   <main class="admin-main">
     <section id="login-view" class="admin-login-wrap">
       <div class="admin-login-card">
@@ -44,6 +44,7 @@
     </section>
   </div>
   <div id="admin-toast" class="admin-toast" role="status" aria-live="polite" hidden></div>
+  <script src="/static/theme.js" defer></script>
   <script src="/static/admin.js" defer></script>
 </body>
 </html>

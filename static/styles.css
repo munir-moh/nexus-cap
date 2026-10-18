@@ -662,6 +662,13 @@ h1, h2, h3 { color: var(--secondary-color); }
   select,
   textarea,
   .detail-update textarea { font-size: 16px; }
+
+  /* iOS Safari miscalculates date-input width when horizontal padding is set. */
+  .field input[type="date"] {
+    padding: 0;
+    -webkit-appearance: none;
+    appearance: none;
+  }
 }
 
 @media (max-width: 760px) {
@@ -671,7 +678,7 @@ h1, h2, h3 { color: var(--secondary-color); }
 }
 
 @media (max-width: 520px) {
-  .navbar .brand-logo { max-width: 150px; height: 44px; }
+  .navbar .brand-logo { max-width: 140px; height: 42px; }
   .report-form { padding: 25px 18px; }
   .field-grid { gap: 20px; }
   .admin-main { padding-block: 24px 34px; }
@@ -694,6 +701,6 @@ h1, h2, h3 { color: var(--secondary-color); }
 }
 
 @media (max-width: 360px) {
-  .navbar .brand-logo { max-width: 128px; height: 42px; }
+  .navbar .brand-logo { max-width: 120px; height: 38px; }
   .theme-toggle { gap: 7px; padding-inline: 9px; }
 }

@@ -654,6 +654,14 @@ h1, h2, h3 { color: var(--secondary-color); }
 .admin-form-actions { justify-content: flex-end; margin-top: 20px; }
 .admin-form-actions .button { width: auto; min-height: 46px; }
 
+/* Keep form text large enough to prevent focus zoom on phones and touch tablets. */
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+  input:not([type="file"]),
+  select,
+  textarea,
+  .detail-update textarea { font-size: 16px; }
+}
+
 @media (max-width: 760px) {
   .admin-main { padding-block: 30px 42px; }
   .admin-login-wrap { width: min(100% - 32px, 620px); }

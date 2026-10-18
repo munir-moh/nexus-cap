@@ -14,19 +14,16 @@
 
   function applyTheme(theme, savePreference = false) {
     const isDark = theme === "dark";
-    const nextTheme = isDark ? "light" : "dark";
     root.dataset.theme = isDark ? "dark" : "light";
     root.style.colorScheme = isDark ? "dark" : "light";
     themeColor?.setAttribute("content", isDark ? "#151b18" : "#ffffff");
 
     toggleButtons.forEach((button) => {
       const label = button.querySelector(".theme-toggle-label");
-      const icon = button.querySelector(".theme-toggle-icon");
-      const actionLabel = `Switch to ${nextTheme} mode`;
-      if (label) label.textContent = `${nextTheme === "dark" ? "Dark" : "Light"} mode`;
-      if (icon) icon.textContent = nextTheme === "dark" ? "☾" : "☀";
-      button.setAttribute("aria-label", actionLabel);
-      button.setAttribute("title", actionLabel);
+      if (label) label.textContent = `${isDark ? "Dark" : "Light"} mode`;
+      button.setAttribute("aria-checked", String(isDark));
+      button.setAttribute("aria-label", "Dark mode");
+      button.setAttribute("title", `${isDark ? "Dark" : "Light"} mode`);
     });
 
     if (savePreference) {

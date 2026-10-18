@@ -6,45 +6,78 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#ffffff">
   <title>Facility Management | Nexus Hub</title>
-  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/styles.css?v=20261018-2">
 </head>
 <body class="admin-page">
-  <header class="site-header"><nav class="navbar container" aria-label="Main navigation"><a class="brand" href="/" aria-label="Nexus Hub home"><!-- Replace this asset with the official Nexus Hub logo. --><img class="brand-logo" src="/static/images/logo.png" alt="Nexus Hub logo"></a><button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch to dark mode"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span class="theme-toggle-label">Dark mode</span></button></nav></header>
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Main navigation">
+      <a class="brand" href="/" aria-label="Nexus Hub home"><img class="brand-logo" src="/static/images/logo.png" alt="Nexus Hub logo"></a>
+      <button class="theme-toggle" type="button" role="switch" aria-checked="false" data-theme-toggle aria-label="Dark mode" title="Dark mode"><span class="theme-toggle-label">Dark mode</span><span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span></button>
+    </nav>
+  </header>
+
   <main class="admin-main">
     <section id="login-view" class="admin-login-wrap">
-      <div class="admin-login-card">
-        <h1>Login</h1>
-        <p>Enter the password to view and manage reports.</p>
-        <form id="login-form"><label class="field"><input id="admin-password" class="admin-input" type="password" autocomplete="current-password" placeholder="Enter the admin password" required></label><div id="login-error" class="admin-login-error" role="alert" hidden></div><button class="button button-primary" type="submit">Login</button></form>
-      </div>
+      <section class="report-card admin-login-card" aria-labelledby="login-title">
+        <div class="card-heading"><div><h2 id="login-title">Admin sign in</h2><p>Enter your password to continue.</p></div></div>
+        <form id="login-form" class="admin-login-form">
+          <label class="field"><span>Admin password</span><input id="admin-password" class="admin-input" type="password" autocomplete="current-password" placeholder="Enter the admin password" required></label>
+          <div id="login-error" class="admin-login-error" role="alert" hidden></div>
+          <button class="button button-primary" type="submit">Sign in</button>
+        </form>
+      </section>
     </section>
 
     <section id="dashboard-view" class="admin-dashboard" hidden>
-      <div class="admin-heading"><div><h1>Report dashboard</h1></div><button id="logout-button" class="button button-quiet" type="button">Log out</button></div>
-      <div class="summary-grid" aria-label="Report totals">
-        <article class="summary-card"><span>Total reports</span><strong id="count-total">0</strong></article>
-        <article class="summary-card"><span>Pending</span><strong id="count-pending">0</strong></article>
-        <article class="summary-card"><span>Verified</span><strong id="count-verified">0</strong></article>
-        <article class="summary-card"><span>In progress</span><strong id="count-in_progress">0</strong></article>
-        <article class="summary-card"><span>Completed</span><strong id="count-completed">0</strong></article>
+      <div class="admin-heading">
+        <div><h1 id="admin-page-title">Reports dashboard</h1><p id="admin-page-copy">Review incoming reports and update their progress.</p></div>
+        <div class="admin-heading-actions">
+          <button id="back-to-reports" class="button button-secondary" type="button" hidden>Back to reports</button>
+          <button id="logout-button" class="button button-quiet" type="button">Log out</button>
+        </div>
       </div>
-      <section class="reports-card" aria-labelledby="reports-title">
-        <div class="reports-top"><div><h2 id="reports-title">Facility reports</h2><p>Open a report to view its details and update its status.</p></div><select id="status-filter" class="admin-select" aria-label="Filter reports by status"><option value="All">All statuses</option><option>Pending</option><option>Verified</option><option>In Progress</option><option>Completed</option><option>Rejected</option></select></div>
-        <div class="table-scroll"><table class="reports-table"><thead><tr><th>Report ID</th><th>Facility / Item</th><th>Location</th><th>Date reported</th><th>Status</th></tr></thead><tbody id="reports-body"><tr><td colspan="5" class="loading-state">Loading reports…</td></tr></tbody></table></div>
+
+      <section id="report-view" class="admin-report-view" hidden aria-labelledby="detail-title">
+        <article class="report-card admin-report-card">
+          <div class="card-heading admin-detail-heading">
+            <div><h2 id="detail-title">Report details</h2><p id="detail-id"></p></div>
+            <span id="detail-status" class="status-pill pending">Pending</span>
+          </div>
+          <div class="admin-report-body">
+            <dl class="detail-fields" id="detail-fields"></dl>
+            <form id="status-form" class="detail-update">
+              <h3>Update report</h3>
+              <div class="field-grid">
+                <label class="field"><span>Status</span><select id="report-status" class="admin-input"><option>Pending</option><option>Verified</option><option>In Progress</option><option>Completed</option><option>Rejected</option></select></label>
+                <label class="field field-full"><span>Resolution note <small>(optional, up to 500 characters)</small></span><textarea id="resolution-note" maxlength="500" placeholder="Add a note about the work completed or inspection…"></textarea></label>
+              </div>
+              <div class="form-actions admin-form-actions">
+                <button id="save-status" class="button button-primary" type="submit">Save update</button>
+              </div>
+            </form>
+          </div>
+        </article>
       </section>
+
+      <div id="dashboard-content">
+        <div class="summary-grid" aria-label="Report totals">
+          <article class="summary-card"><span>Total reports</span><strong id="count-total">0</strong></article>
+          <article class="summary-card"><span>Pending</span><strong id="count-pending">0</strong></article>
+          <article class="summary-card"><span>Verified</span><strong id="count-verified">0</strong></article>
+          <article class="summary-card"><span>In progress</span><strong id="count-in_progress">0</strong></article>
+          <article class="summary-card"><span>Completed</span><strong id="count-completed">0</strong></article>
+        </div>
+        <section class="reports-card" aria-labelledby="reports-title">
+          <div class="reports-top"><div><h2 id="reports-title">Facility reports</h2></div><select id="status-filter" class="admin-select" aria-label="Filter reports by status"><option value="All">All statuses</option><option>Pending</option><option>Verified</option><option>In Progress</option><option>Completed</option><option>Rejected</option></select></div>
+          <div class="table-scroll"><table class="reports-table"><thead><tr><th>Report ID</th><th>Facility / Item</th><th>Location</th><th>Date reported</th><th>Status</th></tr></thead><tbody id="reports-body"><tr><td colspan="5" class="loading-state">Loading reports…</td></tr></tbody></table></div>
+        </section>
+      </div>
     </section>
   </main>
-  <footer class="admin-footer">© <span id="admin-year"></span> Nexus Hub. All rights reserved.</footer>
 
-  <div id="report-detail" class="report-detail" hidden>
-    <section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title">
-      <div class="detail-header"><div><h2 id="detail-title">Report details</h2><p id="detail-id"></p></div><button id="close-detail" class="icon-button" type="button" aria-label="Close report details">×</button></div>
-      <dl class="detail-fields" id="detail-fields"></dl>
-      <form id="status-form" class="detail-update"><h3>Update report</h3><label>Status<select id="report-status" class="admin-input"><option>Pending</option><option>Verified</option><option>In Progress</option><option>Completed</option><option>Rejected</option></select></label><label>Resolution note <small>(optional, up to 500 characters)</small><textarea id="resolution-note" maxlength="500" placeholder="Add a note about the work completed or inspection…"></textarea></label><button id="save-status" class="button button-primary" type="submit">Save update</button></form>
-    </section>
-  </div>
+  <footer class="admin-footer">© <span id="admin-year"></span> Nexus Hub. All rights reserved.</footer>
   <div id="admin-toast" class="admin-toast" role="status" aria-live="polite" hidden></div>
   <script src="/static/theme.js" defer></script>
-  <script src="/static/admin.js" defer></script>
+  <script src="/static/admin.js?v=20261018-2" defer></script>
 </body>
 </html>

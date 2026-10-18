@@ -1,6 +1,6 @@
 from datetime import date, datetime, timezone
 
-from sqlalchemy import Date, DateTime, Index, String, Text
+from sqlalchemy import Date, DateTime, ForeignKey, Index, LargeBinary, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .database import Base
@@ -16,9 +16,18 @@ class Report(Base):
     facility_item: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     date_noticed: Mapped[date] = mapped_column(Date, nullable=False)
-    photo_filename: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    photo_content_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
     status: Mapped[str] = mapped_column(String(24), nullable=False, default="Pending")
     resolution_note: Mapped[str | None] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
     )
+
+
+class ReportPhoto(Base):
+    __tablename__ = "facility_report_photos"
+
+    report_id: Mapped[str] = mapped_column(
+        ForeignKey("facility_reports.id", ondelete="CASCADE"), primary_key=True
+    )
+    data: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)

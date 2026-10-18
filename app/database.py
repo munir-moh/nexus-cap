@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.pool import NullPool
 
 load_dotenv()
 
@@ -15,7 +16,7 @@ def database_url() -> str:
     url = os.getenv("DATABASE_URL", "").strip()
     if not url:
         raise RuntimeError(
-            "DATABASE_URL is missing. Copy .env.example to .env and configure your Supabase PostgreSQL URL."
+            "DATABASE_URL is missing. Copy .env.example to .env and configure your PostgreSQL connection URL."
         )
     if url.startswith("postgres://"):
         url = url.replace("postgres://", "postgresql+psycopg://", 1)
@@ -24,7 +25,8 @@ def database_url() -> str:
     return url
 
 
-engine = create_engine(database_url(), pool_pre_ping=True)
+# Use the database provider's pooled endpoint to keep connections serverless-friendly.
+engine = create_engine(database_url(), poolclass=NullPool)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
 

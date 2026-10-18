@@ -2,13 +2,23 @@ const form = document.querySelector("#report-form");
 const formMessage = document.querySelector("#form-message");
 const successPanel = document.querySelector("#success-panel");
 const fileInput = document.querySelector("#photo");
+const MAX_PHOTO_BYTES = 4 * 1024 * 1024;
 
 document.querySelector("#year").textContent = new Date().getFullYear();
 const dateField = form.elements.date_noticed;
 dateField.max = new Date().toISOString().slice(0, 10);
 
 fileInput.addEventListener("change", () => {
-  const file = fileInput.files[0];
+  let file = fileInput.files[0];
+  if (file && file.size > MAX_PHOTO_BYTES) {
+    fileInput.value = "";
+    file = null;
+    formMessage.textContent = "Photos must be 4.2 MB or smaller.";
+    formMessage.hidden = false;
+    formMessage.className = "form-message error";
+  } else {
+    formMessage.hidden = true;
+  }
   document.querySelector("#file-label").textContent = file ? file.name : "Choose a photo";
 });
 

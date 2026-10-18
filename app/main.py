@@ -15,27 +15,22 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from .database import Base, engine, get_db
-from .models import Report
+from .models import Report, ReportPhoto
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = BASE_DIR / "static"
-UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "data/uploads"))
-if not UPLOAD_DIR.is_absolute():
-    UPLOAD_DIR = BASE_DIR / UPLOAD_DIR
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 APP_SECRET_KEY = os.getenv("APP_SECRET_KEY", "")
 COOKIE_SECURE = os.getenv("APP_COOKIE_SECURE", "false").lower() in {"1", "true", "yes"}
 SESSION_TTL_SECONDS = 12 * 60 * 60
 SESSION_COOKIE = "nexus_admin_session"
-MAX_UPLOAD_BYTES = 5 * 1024 * 1024
+MAX_UPLOAD_BYTES = 4 * 1024 * 1024
 ALLOWED_IMAGE_TYPES = {
-    "image/jpeg": (".jpg", lambda data: data.startswith(b"\xff\xd8\xff")),
-    "image/png": (".png", lambda data: data.startswith(b"\x89PNG\r\n\x1a\n")),
-    "image/webp": (".webp", lambda data: data.startswith(b"RIFF") and data[8:12] == b"WEBP"),
+    "image/jpeg": lambda data: data.startswith(b"\xff\xd8\xff"),
+    "image/png": lambda data: data.startswith(b"\x89PNG\r\n\x1a\n"),
+    "image/webp": lambda data: data.startswith(b"RIFF") and data[8:12] == b"WEBP",
 }
 REPORT_STATUSES = {"Pending", "Verified", "In Progress", "Completed", "Rejected"}
 
@@ -98,7 +93,7 @@ def report_data(report: Report) -> dict:
         "date_reported": report.created_at.isoformat(),
         "status": report.status,
         "resolution_note": report.resolution_note,
-        "photo_url": f"/api/admin/reports/{report.id}/photo" if report.photo_filename else None,
+        "photo_url": f"/api/admin/reports/{report.id}/photo" if report.photo_content_type else None,
     }
 
 
@@ -141,19 +136,18 @@ async def create_report(
         raise HTTPException(status_code=422, detail="Please complete all required fields.")
     if date_noticed > date.today():
         raise HTTPException(status_code=422, detail="Date noticed cannot be in the future.")
-    photo_filename = None
+    photo_contents = None
+    photo_content_type = None
     if photo and photo.filename:
-        file_type = ALLOWED_IMAGE_TYPES.get(photo.content_type or "")
-        if not file_type:
+        signature_check = ALLOWED_IMAGE_TYPES.get(photo.content_type or "")
+        if not signature_check:
             raise HTTPException(status_code=400, detail="Upload a JPG, PNG, or WebP image.")
-        contents = await photo.read(MAX_UPLOAD_BYTES + 1)
-        if len(contents) > MAX_UPLOAD_BYTES:
-            raise HTTPException(status_code=400, detail="Photos must be 5 MB or smaller.")
-        extension, signature_check = file_type
-        if not signature_check(contents):
+        photo_contents = await photo.read(MAX_UPLOAD_BYTES + 1)
+        if len(photo_contents) > MAX_UPLOAD_BYTES:
+            raise HTTPException(status_code=400, detail="Photos must be 4.2 MB or smaller (4 MiB).")
+        if not signature_check(photo_contents):
             raise HTTPException(status_code=400, detail="The uploaded file does not match its image type.")
-        photo_filename = f"{secrets.token_hex(20)}{extension}"
-        (UPLOAD_DIR / photo_filename).write_bytes(contents)
+        photo_content_type = photo.content_type
 
     report_id = f"NXR-{datetime.now(timezone.utc):%Y%m%d}-{secrets.token_hex(3).upper()}"
     report = Report(
@@ -163,17 +157,18 @@ async def create_report(
         facility_item=facility_item,
         description=description,
         date_noticed=date_noticed,
-        photo_filename=photo_filename,
+        photo_content_type=photo_content_type,
         status="Pending",
         created_at=datetime.now(timezone.utc),
     )
     try:
         db.add(report)
+        db.flush()
+        if photo_contents is not None:
+            db.add(ReportPhoto(report_id=report_id, data=photo_contents))
         db.commit()
     except Exception:
         db.rollback()
-        if photo_filename:
-            (UPLOAD_DIR / photo_filename).unlink(missing_ok=True)
         raise
     return {"message": "Report submitted successfully.", "id": report.id}
 
@@ -224,14 +219,18 @@ def get_report(report_id: str, _: None = Depends(require_admin), db: Session = D
 
 
 @app.get("/api/admin/reports/{report_id}/photo")
-def get_report_photo(report_id: str, _: None = Depends(require_admin), db: Session = Depends(get_db)) -> FileResponse:
+def get_report_photo(report_id: str, _: None = Depends(require_admin), db: Session = Depends(get_db)) -> Response:
     report = db.get(Report, report_id)
-    if not report or not report.photo_filename:
+    if not report or not report.photo_content_type:
         raise HTTPException(status_code=404, detail="Photo not found.")
-    photo_path = UPLOAD_DIR / report.photo_filename
-    if not photo_path.is_file():
+    photo = db.get(ReportPhoto, report_id)
+    if not photo:
         raise HTTPException(status_code=404, detail="Photo file not found.")
-    return FileResponse(photo_path, headers={"Cache-Control": "private, no-store"})
+    return Response(
+        content=photo.data,
+        media_type=report.photo_content_type,
+        headers={"Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff"},
+    )
 
 
 @app.patch("/api/admin/reports/{report_id}")

@@ -15,9 +15,9 @@
         <!-- Replace this asset with the official Nexus Hub logo. -->
         <img class="brand-logo" src="/static/images/logo.png" alt="Nexus Hub logo">
       </a>
-      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch to dark mode">
-        <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+      <button class="theme-toggle" type="button" role="switch" aria-checked="false" data-theme-toggle aria-label="Dark mode" title="Dark mode">
         <span class="theme-toggle-label">Dark mode</span>
+        <span class="theme-switch" aria-hidden="true"><span class="theme-switch-thumb"></span></span>
       </button>
     </nav>
   </header>
@@ -37,18 +37,18 @@
       </div>
       <form id="report-form" class="report-form">
         <div class="field-grid">
-          <label class="field"><span>Your Name <b>*</b></span><input name="name" type="text" autocomplete="name" placeholder="e.g. Alex Johnson" minlength="2" maxlength="120" required></label>
+          <label class="field"><span>Your Name <b>*</b></span><input name="name" type="text" autocomplete="name" placeholder="e.g. Munir Mohammed" minlength="2" maxlength="120" required></label>
           <label class="field"><span>Location <b>*</b></span><select name="location" required><option value="" disabled selected>Select a location</option><option>Main Reception</option><option>Coworking Space</option><option>Meeting Room</option><option>Private Office</option><option>Kitchen</option><option>Restroom</option><option>Event Space</option><option>Other</option></select></label>
           <label class="field"><span>Facility or Item <b>*</b></span><select name="facility_item" required><option value="" disabled selected>Select an item</option><option>Chair</option><option>Desk</option><option>Air Conditioning</option><option>Lighting</option><option>Electrical Outlet</option><option>Internet / Wi-Fi</option><option>Plumbing</option><option>Door / Lock</option><option>Printer</option><option>Cleanliness</option><option>Other</option></select></label>
           <label class="field"><span>Date Noticed <b>*</b></span><input name="date_noticed" type="date" required></label>
           <label class="field field-full"><span>Description of Problem <b>*</b></span><textarea name="description" rows="4" minlength="10" maxlength="4000" placeholder="Describe what happened and where the team can find it…" required></textarea></label>
-          <label class="field field-full"><span>Photo <small>(optional)</small></span><div class="upload-control"><input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp"><span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15.5V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v4a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="upload-copy"><strong id="file-label">Choose a photo</strong><small>JPG, PNG or WebP · up to 5 MB</small></span><span class="upload-browse">Browse</span></div></label>
+          <label class="field field-full"><span>Photo <small>(optional)</small></span><div class="upload-control"><input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp"><span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15.5V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v4a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="upload-copy"><strong id="file-label">Choose a photo</strong><small>JPG, PNG or WebP · up to 4.2 MB</small></span><span class="upload-browse">Browse</span></div></label>
         </div>
         <div id="form-message" class="form-message" role="status" aria-live="polite" hidden></div>
-        <div class="form-actions"><span class="privacy-note"><button class="button button-primary" type="submit"><span>Submit report</span><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+        <div class="form-actions"><button class="button button-primary" type="submit"><span>Submit report</span><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
       </form>
       <div id="success-panel" class="success-panel" hidden role="status" aria-live="polite">
-        <p class="eyebrow">Thank you!</p><h2>Report submitted successfully.</h2><p>Thank you for helping us maintain Nexus Hub. Your report has been sent to the facility management team.</p><button id="new-report" class="button button-secondary" type="button">Submit another report</button>
+        <h2>Report submitted successfully.</h2><p>Thank you for helping us maintain Nexus Hub.</p><button id="new-report" class="button button-secondary" type="button">Submit another report</button>
       </div>
     </section>
   </main>

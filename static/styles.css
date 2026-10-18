@@ -198,6 +198,8 @@ h1, h2, h3 { color: var(--secondary-color); }
 }
 .field > span small { color: var(--muted-color); font-size: 12px; font-weight: 400; }
 .field input, .field select, .field textarea, .admin-input, .admin-select {
+  min-width: 0;
+  max-width: 100%;
   width: 100%;
   border: 1px solid var(--border-color);
   border-radius: 3px;
@@ -669,6 +671,7 @@ h1, h2, h3 { color: var(--secondary-color); }
 }
 
 @media (max-width: 520px) {
+  .navbar .brand-logo { max-width: 150px; height: 44px; }
   .report-form { padding: 25px 18px; }
   .field-grid { gap: 20px; }
   .admin-main { padding-block: 24px 34px; }
@@ -691,6 +694,6 @@ h1, h2, h3 { color: var(--secondary-color); }
 }
 
 @media (max-width: 360px) {
-  .navbar .brand-logo { max-width: 140px; height: 48px; }
+  .navbar .brand-logo { max-width: 128px; height: 42px; }
   .theme-toggle { gap: 7px; padding-inline: 9px; }
 }

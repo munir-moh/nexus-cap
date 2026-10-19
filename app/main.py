@@ -21,6 +21,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = BASE_DIR / "static"
+FRONTEND_INDEX = STATIC_DIR / "build" / "index.html"
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 APP_SECRET_KEY = os.getenv("APP_SECRET_KEY", "")
 COOKIE_SECURE = os.getenv("APP_COOKIE_SECURE", "false").lower() in {"1", "true", "yes"}
@@ -108,12 +109,12 @@ class StatusUpdate(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 def public_home() -> FileResponse:
-    return FileResponse(STATIC_DIR / "index.html")
+    return FileResponse(FRONTEND_INDEX)
 
 
 @app.get("/admin", response_class=HTMLResponse, include_in_schema=False)
 def admin_home() -> FileResponse:
-    return FileResponse(STATIC_DIR / "admin.html", headers={"X-Robots-Tag": "noindex, nofollow"})
+    return FileResponse(FRONTEND_INDEX, headers={"X-Robots-Tag": "noindex, nofollow"})
 
 
 @app.get("/robots.txt", include_in_schema=False)

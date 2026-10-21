@@ -10,7 +10,6 @@ function getInitialTheme() {
     const savedTheme = window.localStorage.getItem("nexus-theme");
     if (savedTheme === "dark" || savedTheme === "light") return savedTheme;
   } catch {
-    // Use the system preference when browser storage is unavailable.
   }
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
@@ -25,11 +24,22 @@ function ThemeToggle({ theme, onToggle }) {
       role="switch"
       aria-checked={isDark}
       aria-label="Dark mode"
-      title={`${isDark ? "Dark" : "Light"} mode`}
       onClick={onToggle}
     >
-      <span className="theme-toggle-label">{isDark ? "Dark" : "Light"} mode</span>
-      <span className="theme-switch" aria-hidden="true"><span className="theme-switch-thumb" /></span>
+      <span className="theme-switch" aria-hidden="true">
+        <span className="theme-switch-thumb">
+          {isDark ? (
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M20 15.5A8 8 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
+              <path d="M12 2v2m0 16v2m10-10h-2M4 12H2m17.07 7.07-1.42-1.42M6.35 6.35 4.93 4.93m14.14 0-1.42 1.42m-11.3 11.3-1.42 1.42" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          )}
+        </span>
+      </span>
     </button>
   );
 }
@@ -66,7 +76,7 @@ function SiteFooter() {
         <div className="footer-social">
           <h2>Follow Nexus Hub</h2>
           <div className="social-links">
-            <a href="https://www.facebook.com/your-nexus-hub-page" target="_blank" rel="noopener noreferrer" aria-label="Nexus Hub on Facebook">
+            <a href="https://www.facebook.com/thenexuskaduna" target="_blank" rel="noopener noreferrer" aria-label="Nexus Hub on Facebook">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 21v-8.2h2.8l.4-3.2h-3.2V7.5c0-.9.3-1.6 1.6-1.6h1.7V3.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.3H7.2v3.2H10V21h3.4Z" fill="currentColor" /></svg>
             </a>
             <a href="https://x.com/thenexus_hub?s=21" target="_blank" rel="noopener noreferrer" aria-label="Nexus Hub on X">
@@ -158,10 +168,10 @@ function PublicReportPage({ theme, onToggle }) {
               <form ref={formRef} className="report-form" onSubmit={handleSubmit}>
                 <div className="field-grid">
                   <label className="field"><span>Your Name <b>*</b></span><input name="name" type="text" autoComplete="name" placeholder="e.g. Munir Mohammed" minLength="2" maxLength="120" required /></label>
-                  <label className="field"><span>Location <b>*</b></span><select name="location" defaultValue="" required><option value="" disabled>Select a location</option><option>Main Reception</option><option>Coworking Space</option><option>Meeting Room</option><option>Private Office</option><option>Kitchen</option><option>Restroom</option><option>Event Space</option><option>Other</option></select></label>
-                  <label className="field"><span>Facility or Item <b>*</b></span><select name="facility_item" defaultValue="" required><option value="" disabled>Select an item</option><option>Chair</option><option>Desk</option><option>Air Conditioning</option><option>Lighting</option><option>Electrical Outlet</option><option>Internet / Wi-Fi</option><option>Plumbing</option><option>Door / Lock</option><option>Printer</option><option>Cleanliness</option><option>Other</option></select></label>
+                  <label className="field"><span>Location <b>*</b></span><select name="location" defaultValue="" required><option value="" disabled>Select a location</option><option>Restaurant</option><option>Main HubFirst Floor</option><option>Main Hub Last Floor</option><option>Training Room Main Hub</option><option>Staff Room</option><option>Extension Basement</option><option>Extension Ground Floor</option><option>Extension First Floor</option><option>Other</option></select></label>
+                  <label className="field"><span>Facility or Item <b>*</b></span><select name="facility_item" defaultValue="" required><option value="" disabled>Select an item</option><option>Chair</option><option>Table</option><option>Air Conditioner</option><option>Lighting</option><option>Electrical Outlet</option><option>Solar System</option><option>Internet / Wi-Fi</option><option>Plumbing</option><option>Door / Lock</option><option>Television</option><option>Other</option></select></label>
                   <label className="field"><span>Date Noticed <b>*</b></span><input name="date_noticed" type="date" max={maxDate} required /></label>
-                  <label className="field field-full"><span>Description of Problem <b>*</b></span><textarea name="description" rows="4" minLength="10" maxLength="4000" placeholder="Describe what happened and where the team can find it…" required /></label>
+                  <label className="field field-full"><span>Description of Problem <b>*</b></span><textarea name="description" rows="4" minLength="10" maxLength="4000" placeholder="Describe what happened and exactly where the team can find it…" required /></label>
                   <label className="field field-full"><span>Photo <small>(optional)</small></span>
                     <div className="upload-control">
                       <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} />
@@ -244,9 +254,9 @@ function AdminLogin({ onLogin, error, busy }) {
   return (
     <section className="admin-login-wrap">
       <section className="report-card admin-login-card" aria-labelledby="login-title">
-        <div className="card-heading"><div><h2 id="login-title">Admin sign in</h2><p>Enter your password to continue.</p></div></div>
+        <div className="card-heading"><div><h2 id="login-title">Admin sign in</h2></div></div>
         <form className="admin-login-form" onSubmit={handleSubmit}>
-          <label className="field"><span>Admin password</span><input className="admin-input" type="password" autoComplete="current-password" placeholder="Enter the admin password" value={password} onChange={(event) => setPassword(event.target.value)} required /></label>
+          <label className="field"><input className="admin-input" type="password" autoComplete="current-password" placeholder="Enter the admin password" value={password} onChange={(event) => setPassword(event.target.value)} required /></label>
           {error && <div className="admin-login-error" role="alert">{error}</div>}
           <button className="button button-primary" type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
         </form>
@@ -284,7 +294,7 @@ function ReportDetails({ report, onSave, saving }) {
             {report.photo_url && <div className="detail-field full"><dt>Attached photo</dt><dd><img className="detail-photo" src={report.photo_url} alt={`Photo attached to report ${report.id}`} /></dd></div>}
           </dl>
           <form className="detail-update" onSubmit={handleSubmit}>
-            <h3>Update report</h3>
+            <h3>Update Report</h3>
             <div className="field-grid">
               <label className="field"><span>Status</span><select className="admin-input" value={status} onChange={(event) => setStatus(event.target.value)}>{REPORT_STATUSES.map((item) => <option key={item}>{item}</option>)}</select></label>
               <label className="field field-full"><span>Resolution note <small>(optional, up to 500 characters)</small></span><textarea maxLength="500" placeholder="Add a note about the work completed or inspection…" value={resolutionNote} onChange={(event) => setResolutionNote(event.target.value)} /></label>
@@ -307,7 +317,7 @@ function ReportsTable({ reports, filter, onFilterChange, onOpen, loading, error,
   return (
     <section className="reports-card" aria-labelledby="reports-title">
       <div className="reports-top">
-        <div><h2 id="reports-title">Facility reports</h2></div>
+        <div><h2 id="reports-title">Facility Reports</h2></div>
         <select className="admin-select" aria-label="Filter reports by status" value={filter} onChange={(event) => onFilterChange(event.target.value)}>
           <option value="All">All statuses</option>{REPORT_STATUSES.map((status) => <option key={status}>{status}</option>)}
         </select>
@@ -449,8 +459,8 @@ function AdminPage({ theme, onToggle }) {
   }
 
   const detailView = Boolean(selectedReport);
-  const adminPageTitle = detailView ? "Report details" : "Report dashboard";
-  const adminPageCopy = detailView ? "Review the information and update the report status." : "Review incoming reports and update their progress.";
+  const adminPageTitle = detailView ? "Report Details" : "Report Dashboard";
+  const adminPageCopy = detailView ? "" :"";
 
   return (
     <>
@@ -517,7 +527,6 @@ function App() {
     try {
       window.localStorage.setItem("nexus-theme", nextTheme);
     } catch {
-      // The selected theme still applies for this visit if storage is unavailable.
     }
     return nextTheme;
   });

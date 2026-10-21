@@ -68,7 +68,7 @@ body {
   padding-top: 92px;
   background: var(--white);
   color: var(--text-color);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 15px;
   line-height: 1.5;
 }
@@ -93,43 +93,47 @@ button, input, textarea, select { font: inherit; }
 }
 .brand { display: inline-flex; align-items: center; text-decoration: none; }
 .brand-logo { display: block; width: auto; max-width: 190px; height: 56px; object-fit: contain; object-position: left center; }
+.navbar .brand-logo { width: 104px; max-width: 104px; height: 32px; object-fit: contain; }
 .theme-toggle {
   display: inline-flex;
-  min-height: 42px;
+  width: 58px;
+  height: 32px;
   align-items: center;
-  gap: 9px;
-  padding: 0 13px;
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
-  background: var(--white);
+  justify-content: flex-start;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
   color: var(--text-color);
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
 }
-.theme-toggle:hover { border-color: var(--primary-color); }
-.theme-toggle:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+.theme-toggle:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 3px; }
 .theme-switch {
   display: inline-flex;
-  width: 44px;
-  height: 26px;
+  width: 58px;
+  height: 32px;
   flex: 0 0 auto;
   align-items: center;
-  padding: 2px;
+  padding: 3px;
   border-radius: 999px;
   background: var(--border-color);
   transition: background-color 160ms ease;
 }
 .theme-switch-thumb {
-  width: 22px;
-  height: 22px;
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  place-items: center;
   border-radius: 50%;
   background: #fff;
+  color: #b87612;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
   transition: transform 160ms ease;
 }
+.theme-switch-thumb svg { display: block; width: 15px; height: 15px; }
 :root[data-theme="dark"] .theme-switch { background: var(--primary-color); }
-:root[data-theme="dark"] .theme-switch-thumb { transform: translateX(18px); }
+:root[data-theme="dark"] .theme-switch-thumb { transform: translateX(26px); color: #426650; }
 .nav-caption {
   color: var(--muted-color);
   font-size: 11px;
@@ -330,7 +334,7 @@ h1, h2, h3 { color: var(--secondary-color); }
   gap: 48px;
   padding-block: 58px 52px;
 }
-.footer-brand .brand-logo { height: 52px; max-width: 200px; }
+.footer-brand .brand-logo { width: 104px; max-width: 104px; height: 32px; object-fit: contain; }
 .footer-brand .brand-copy strong { font-size: 13px; }
 .footer-brand-block > p { margin: 16px 0 0; color: #fff; font-size: 13px; line-height: 1.7; }
 .footer-content h2 { margin: 0 0 16px; color: #fff; font-size: 15px; font-weight: 700; }
@@ -367,8 +371,14 @@ h1, h2, h3 { color: var(--secondary-color); }
   text-align: center;
 }
 
-/* Admin sign-in and report dashboard */
-.admin-page { min-height: 100vh; display: flex; flex-direction: column; }
+.admin-page { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+.admin-page #root {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  min-height: calc(100vh - 92px);
+  min-height: calc(100dvh - 92px);
+}
 .admin-main { display: flex; flex: 1; align-items: center; justify-content: center; padding-block: 36px 54px; background: var(--white); }
 .admin-footer {
   padding-block: 20px;
@@ -559,7 +569,6 @@ h1, h2, h3 { color: var(--secondary-color); }
 .detail-update textarea { background: var(--white); color: var(--text-color); }
 .detail-update textarea::placeholder { color: var(--muted-color); }
 
-/* Page-based report forms shared by the public and admin views */
 .report-card,
 .reports-card,
 .summary-card,
@@ -591,7 +600,7 @@ h1, h2, h3 { color: var(--secondary-color); }
 
 .admin-main {
   display: block;
-  flex: 1;
+  flex: 1 0 auto;
   padding: 36px 0 54px;
 }
 .admin-login-wrap { width: min(760px, calc(100% - 48px)); }
@@ -621,9 +630,24 @@ h1, h2, h3 { color: var(--secondary-color); }
   margin-inline: auto;
 }
 .admin-dashboard.is-detail-view .admin-heading > div:first-child { width: 100%; text-align: center; }
+.admin-dashboard.is-detail-view .admin-heading-actions { grid-row: 1; }
+.admin-dashboard.is-detail-view .admin-heading > div:first-child { grid-row: 2; }
 .admin-dashboard.is-detail-view .admin-heading h1,
 .admin-dashboard.is-detail-view .admin-heading p { text-align: center; }
 .admin-dashboard.is-detail-view .admin-heading-actions { width: 100%; justify-content: space-between; }
+@media (max-width: 520px) {
+  .admin-dashboard:not(.is-detail-view) .admin-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-dashboard:not(.is-detail-view) .admin-heading > div:first-child { grid-row: 2; }
+  .admin-dashboard:not(.is-detail-view) .admin-heading-actions {
+    grid-row: 1;
+    justify-self: end;
+    width: auto;
+    justify-content: flex-end;
+  }
+}
 .admin-report-card { max-width: 100%; overflow: hidden; }
 .admin-detail-heading { justify-content: space-between; gap: 16px; }
 .admin-detail-heading > div { flex: 1; }
@@ -639,7 +663,8 @@ h1, h2, h3 { color: var(--secondary-color); }
   background: var(--white);
 }
 .detail-field dt { margin-bottom: 5px; font-size: 11px; }
-.detail-field dd { font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
+.detail-field dd { font-size: 14px; font-weight: 400; line-height: 1.55; white-space: pre-wrap; }
+.admin-report-view .status-pill { font-weight: 400; }
 .detail-photo { display: block; margin-top: 8px; border-radius: 7px; }
 .detail-update { padding-top: 22px; border-top: 1px solid var(--border-color); }
 .detail-update h3 { margin: 0 0 18px; font-size: 19px; }
@@ -651,19 +676,18 @@ h1, h2, h3 { color: var(--secondary-color); }
   background: var(--white);
   color: var(--text-color);
   font: inherit;
+  font-weight: 400;
 }
-.detail-update .admin-input { min-height: 50px; padding-inline: 12px; }
+.detail-update .admin-input { min-height: 50px; padding-inline: 12px; font-weight: 400; }
 .admin-form-actions { justify-content: flex-end; margin-top: 20px; }
 .admin-form-actions .button { width: auto; min-height: 46px; }
 
-/* Keep form text large enough to prevent focus zoom on phones and touch tablets. */
 @media (max-width: 1024px), (hover: none) and (pointer: coarse) {
   input:not([type="file"]),
   select,
   textarea,
   .detail-update textarea { font-size: 16px; }
 
-  /* iOS Safari miscalculates date-input width when horizontal padding is set. */
   .field input[type="date"] {
     padding: 0;
     -webkit-appearance: none;
@@ -678,10 +702,10 @@ h1, h2, h3 { color: var(--secondary-color); }
 }
 
 @media (max-width: 520px) {
-  .navbar .brand-logo { max-width: 140px; height: 42px; }
   .report-form { padding: 25px 18px; }
   .field-grid { gap: 20px; }
   .admin-main { padding-block: 24px 34px; }
+  .admin-page #root { min-height: calc(100vh - 78px); min-height: calc(100dvh - 78px); }
   .admin-login-wrap { width: calc(100% - 28px); }
   .admin-login-form { padding: 24px 18px; }
   .admin-heading { align-items: flex-start; flex-direction: column; }
@@ -701,6 +725,4 @@ h1, h2, h3 { color: var(--secondary-color); }
 }
 
 @media (max-width: 360px) {
-  .navbar .brand-logo { max-width: 120px; height: 38px; }
-  .theme-toggle { gap: 7px; padding-inline: 9px; }
 }

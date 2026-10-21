@@ -25,7 +25,6 @@ def database_url() -> str:
     return url
 
 
-# Use the database provider's pooled endpoint to keep connections serverless-friendly.
 engine = create_engine(database_url(), poolclass=NullPool)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
